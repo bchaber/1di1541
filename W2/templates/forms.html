@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Strona testująca sposoby przesyłania danych</title>
+    <script>
+      window.addEventListener("load", function() {
+        console.info("Inicjalizuję obsługę formularza wysyłającego asynchronicznie JSON");
+        form_json = document.getElementById("form-json");
+        form_json.addEventListener("submit", function(event) {
+          event.preventDefault();
+          console.info("Zablokowano domyślną obsługę");
+
+          data = new FormData(form_json);
+          json = JSON.stringify(Object.fromEntries(data));
+
+          fetch("/with-json", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: json
+          }).then((response) => response.text())
+            .then((text) => console.info(text));
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <p>Wysłanie danych metodą GET zakodowanych <em>URL-encoding</em>
+      <form action="/with-get" method="get">
+        <input name="username" value="admin"  type="text"/>
+        <input name="password" value="lupa.8" type="password"/>
+        <input name="submit"   value="wyślij" type="submit"/>
+      </form>
+    </p>
+
+    <p> Wysłanie danych metodą POST
+      <form action="/with-post" method="post">
+        <input name="username" value="admin"  type="text"/>
+        <input name="password" value="lupa.8" type="password"/>
+        <input name="submit"   value="wyślij" type="submit"/>
+      </form>
+    </p>
+
+    <p> Wysyłanie pliku w postaci binarnej
+      <form action="/with-file" method="post" enctype="multipart/form-data">
+        <input name="username" value="admin"  type="text"/>
+        <input name="password" value="lupa.8" type="password"/>
+        <input name="license"  value=""       type="file"/>
+        <input name="submit"   value="wyślij" type="submit"/>
+      </form>
+    </p>
+
+    <p> Wysyłanie danych <strong>asynchronicznie</strong> zakodowanych jako <em>JSON</em>
+      <form action="/with-json" method="post" id="form-json">
+        <input name="username" value="admin"  type="text"/>
+        <input name="password" value="lupa.8" type="password"/>
+        <input name="submit"   value="wyślij" type="submit"/>
+      </form>
+  </body>
+</html>
+
