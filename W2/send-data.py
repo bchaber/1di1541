@@ -46,5 +46,9 @@ def with_json():
         password = request.form.get("password", "nothing")
         return "Got form [" + username + "] and [" + password + "]", 200
 
+@app.route('/with-url/<argument>', methods=["GET"])
+def with_url(argument):
+    return "Got argument [" + argument + "]", 200
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5050)
