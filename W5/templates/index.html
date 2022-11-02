@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test różnych rodzajów odpytywania</title>
+    <script src="/static/main.js"></script>
+  </head>
+  
+  <body>
+    <form action="/job" id="form" method="post">
+      <input type="hidden" value="10" name="workload"/>
+      <input type="submit" value="start" name="start"/>
+    </form>
+
+    <ul>
+      <li><a href="/#" id="ajax-polling">start</a> Ajax-polling</li>
+      <li><a href="/#" id="long-polling">start</a> Long-polling</li>
+    </ul>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+Aplikacja polling.py wymaga wcześniejszego uruchomienia bazy danych Redis: `docker run -p 6379:6379 redis`
+Gdy serwer Redis jest dostępny pod adresem 127.0.0.1:6379, można uruchomić aplikację we Flask.
+Dostępne są dwa tryby:
+- wykorzystując wbudowany serwer: `python3 polling.py`,
+- wykorzystując serwer aplikacji uWSGI: `uwsgi --http 127.0.0.1:5050 --master --workers 2 --wsgi polling:app`.
