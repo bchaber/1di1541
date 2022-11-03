@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import make_response, render_template
+from flask import render_template
 from flask import request
 
 from datetime import datetime
@@ -8,8 +8,10 @@ from redis import StrictRedis
 from time import sleep
 from sys import exit
 
+redis_url = "redis://127.0.0.1"
 app = Flask(__name__)
-db = StrictRedis("127.0.0.1", decode_responses=True)
+app.config["REDIS_URL"] = redis_url
+db = StrictRedis.from_url(redis_url, decode_responses=True)
 
 # check if the database is available
 try:
@@ -19,9 +21,17 @@ except:
   print("Start Redis instance first. Exiting.")
   exit(1)
 
+from flask import url_for
+from flask_sse import sse
+app.register_blueprint(sse, url_prefix="/stream")
+
 @app.route("/")
 def index():
   return render_template("index.html")
+
+@app.route("/sse")
+def server_sent_events():
+  return render_template("sse.html")
 
 @app.route("/job", methods=["POST"])
 def job():
@@ -40,6 +50,7 @@ def job():
       sleep(randint(1, 3))
       t += 1
       db.set("progress", int(100 * t/w))
+      sse.publish(db.get("progress"), type="msg")
     db.set("status", "idle")
 
   except:

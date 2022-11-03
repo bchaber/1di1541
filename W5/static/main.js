@@ -1,12 +1,4 @@
-function clear_output() {
-  output = document.getElementById("output")
-  if (output)
-    output.innerText = ""
-}
-
-async function update(response) {
-  code = await response.status
-  text = await response.text()
+function set_output(text) {
   output = document.getElementById("output")
 
   if (!output) {
@@ -15,7 +7,17 @@ async function update(response) {
     document.body.appendChild(output)
   }
 
-  output.innerText = "Current job finished in " + text + "%"
+  output.innerText = text
+}
+
+function clear_output() {
+    set_output("")
+}
+
+async function update(response) {
+  code = await response.status
+  text = await response.text()
+  set_output("Current job finished in " + text + "%")
 
   return (code == 200) ? text : "ERR"
 }

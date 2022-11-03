@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test różnych rodzajów odpytywania</title>
+    <script src="/static/main.js"></script>
+    <script>
+      es = new EventSource("/stream")
+      es.addEventListener("msg", function(event) {
+          set_output("Current job finished in " + event.data + "%")
+      }, false);
+      es.addEventListener("error", function(event) {
+          set_output("Failed to connect to event stream. Is the server running?");
+      }, false);
+    </script>
+  </head>
+  
+  <body>
+    <form action="/job" id="form" method="post">
+      <input type="hidden" value="10" name="workload"/>
+      <input type="submit" value="start" name="start"/>
+    </form>
+  </body>
+</html>
