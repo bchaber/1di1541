@@ -82,7 +82,7 @@ def check():
 
   return "Unknown mode " + mode, 400
 
-@app.route("/reset")
+@app.route("/reset", methods=["POST"])
 def reset():
   db.set("progress", "??")
   db.set("status", "idle")

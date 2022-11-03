@@ -40,11 +40,21 @@ async function check_with_long_polling(state, errors) {
 
 
 window.addEventListener("load", function() {
-  form = document.getElementById("form")
-  if (form) {
-    form.addEventListener("submit", function(event) {
+  start = document.getElementById("start")
+  if (start) {
+    start.addEventListener("submit", function(event) {
       event.preventDefault()
-      fetch(form.action, {method:"post"})
+      fetch(start.action, {method:"post"})
+      .then((response) => response.text())
+      .then((text) => console.info(text))
+    })
+  }
+
+  reset = document.getElementById("reset")
+  if (reset) {
+    reset.addEventListener("submit", function(event) {
+      event.preventDefault()
+      fetch(reset.action, {method:"post"})
       .then((response) => response.text())
       .then((text) => console.info(text))
     })

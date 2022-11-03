@@ -9,9 +9,13 @@
     <p>(przejdź do wersji wykorzystującej <a href="/sse">server-sent events</a>)</p> 
     <p>Poniższy przycisk pozwala na uruchomienie zadania trwającego (domyślnie) od 10 do 30 sekund.</p>
 
-    <form action="/job" id="form" method="post">
+    <form action="/job" id="start" method="post">
       <input type="hidden" value="10" name="workload"/>
       <input type="submit" value="start" name="start"/>
+    </form>
+   
+    <form action="/reset" id="reset" method="post">
+      <input type="submit" value="reset" name="reset"/>
     </form>
    
     <p>Ta aplikacja pozwala na przetestowanie dwóch rodzajów odpytywania (proszę, korzystaj tylko z jednego na raz ;))</p>
