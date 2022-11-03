@@ -1,4 +1,4 @@
 flask
 flask_sse
 redis
-uwsgi
+gunicorn

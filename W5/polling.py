@@ -82,5 +82,11 @@ def check():
 
   return "Unknown mode " + mode, 400
 
+@app.route("/reset")
+def reset():
+  db.set("progress", "??")
+  db.set("status", "idle")
+  return "Reset completed"
+
 if __name__ == "__main__":
   app.run("0.0.0.0", port=5050)
