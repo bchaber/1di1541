@@ -1,0 +1,5 @@
+Przykładowa usługa SOAP.
+
+$ docker build -t stos .
+$ docker run -it -p8080:8080 stos
+$ curl -Lv http://127.0.0.1:8080/ws/publications.wsdl
