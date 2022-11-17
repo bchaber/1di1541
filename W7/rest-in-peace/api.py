@@ -3,6 +3,7 @@ import re
 import hal
 import jwt
 
+from rich import print
 from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
@@ -14,6 +15,11 @@ from fastapi import Response
 from fastapi import HTTPException
 from pydantic import BaseModel
 
+class Slot(BaseModel):
+  id: str
+  doctor: str
+  start: str
+  end: str
 
 class Patient(BaseModel):
   id: str
@@ -23,8 +29,8 @@ class AppointmentRequest(BaseModel):
 
 app = FastAPI()
 slots = {
-  "1234": {"id": "1234", "doctor": "mjones", "start": "1400", "end": "1450"},
-  "5678": {"id": "5678", "doctor": "mjones", "start": "1600", "end": "1650"},
+  "1234": Slot(id="1234", doctor="mjones", start="1400", end="1450"),
+  "5678": Slot(id="5678", doctor="mjones", start="1600", end="1650"),
 }
 
 @app.get("/")
@@ -46,8 +52,8 @@ def doctors_slot(doctor: str, date: str, status: str):
 
   content = {}
 
-  slot1 = slots["1234"].copy()
-  slot2 = slots["5678"].copy()
+  slot1 = slots["1234"].dict()
+  slot2 = slots["5678"].dict()
   hal.add_link(slot1, "slot:book", "/slots/" + slot1["id"])
   hal.add_link(slot2, "slot:book", "/slots/" + slot2["id"])
 
@@ -63,19 +69,17 @@ def create_slot(id, patient: Patient, response: Response):
   if not re.match("^[a-z]+$", patient.id):
     raise HTTPException(status_code=400, detail="invalid patient id")
 
-  doctor = "mjones"
   date = "20221117"
+  slot = slots[id]
 
-  slot = slots[id].copy()
-
-  content = slot
-  hal.add_link(content, "self", "/slots/" + slot["id"] + "/appointment")
+  content = slot.dict()
+  hal.add_link(content, "self", "/slots/" + slot.id + "/appointment")
   hal.add_link(content, "help", "/help/appointment")
 
-  location = "/slots/" + slot["id"] + "/appointment"
+  location = "/slots/" + slot.id + "/appointment"
   hal.add_link(content, "appointment:cancel", location)
-  hal.add_link(content, "appointment:addtest", "/slots/" + slot["id"] + "/tests")
-  hal.add_link(content, "appointment:changetime", "/doctors/" + doctor + "/slots?date=" + date + "&status=open")
+  hal.add_link(content, "appointment:addtest", "/slots/" + slot.id + "/tests")
+  hal.add_link(content, "appointment:changetime", "/doctors/" + slot.doctor + "/slots?date=" + date + "&status=open")
   hal.add_link(content, "appointment:updatecontact", "/patients/" + patient.id + "/contactinfo")
 
   response.headers["Location"] = location
@@ -101,3 +105,19 @@ def cancel_appointment(id: str, request: Request):
     return "appointment canceled"
   except:
     raise HTTPException(status_code=403, detail="you are unauthorized to cancel the appointment")
+
+@app.get("/slots/{id}/appointment")
+def show_appointment(id: str):
+  raise HTTPException(status_code=501, detail="this endpoint is missing")
+
+@app.post("/slots/{id}/tests")
+def add_tests(id: str):
+  raise HTTPException(status_code=501, detail="this endpoint is missing")
+
+@app.put("/patients/{id}/contactinfo")
+def update_contact_info(id: str):
+  raise HTTPException(status_code=501, detail="this endpoint is missing")
+
+@app.get("/help/appointment")
+def help_with_appointment():
+  return {"message": "you should reach us via e-mail: ..."}
