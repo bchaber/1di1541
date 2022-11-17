@@ -3,7 +3,7 @@ import re
 import hal
 import jwt
 
-from rich import print
+# from rich import print
 from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
