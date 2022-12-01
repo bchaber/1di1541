@@ -1,6 +1,7 @@
 import { writable, derived } from "svelte/store";
 
 export const authenticated = writable(false);
+export const authorized = writable(false);
 export const popup = writable(false);
 export const user = writable({});
 export const token = writable();

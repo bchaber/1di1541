@@ -4,34 +4,50 @@
   import Task from './lib/Task.svelte'
 
   import { onMount } from 'svelte';
-  import { authenticated, user, token } from './store';
+  import { authenticated, authorized, user, token } from './store';
   import { tasks, user_tasks } from './store';
   import auth from './auth_service';
 
   let client;
-  let newTask;
+  let newTaskDescription;
 
   onMount(async () => {
     client = await auth.createClient();
     authenticated.set(await client.isAuthenticated());
+    token.set(await client.getTokenSilently({
+      authorizationParams: {
+        audience: 'http://localhost:3001',
+        scope: 'read:tasks write:tasks'
+      }
+    }));
+    authorized.set($token !== undefined);
     user.set(await client.getUser());
-    console.log($user)
   });
 
-  function authorize() { auth.authorizeWithPopup(client); console.log($token) }
-  function login() { auth.loginWithPopup(client); console.log($user) }
+  function authorize() { auth.authorizeWithPopup(client) }
+  function login() { auth.loginWithPopup(client) }
   function logout() { auth.logout(client); }
 
-  function addItem() {
-    let updatedTasks = [...$tasks, {
+  function addTask() {
+    let newTask = {
       id: randomString(),
-      description: newTask,
+      description: newTaskDescription,
       completed: false,
       user: $user.email
-    }]
+    }
 
+    let updatedTasks = [...$tasks, newTask]
+
+    fetch("http://localhost:3001/tasks", {
+      method: "POST",
+      headers: {
+        'Authorization': 'Bearer ' + $token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newTask)
+    })
     tasks.set(updatedTasks);
-    newTask = "";
+    newTaskDescription = "";
   }
 
   function randomString(length = 7) {
@@ -69,7 +85,11 @@
     {/if}
 
     {#if $authenticated}
-      <a href="/#" on:click="{authorize}">Authorize</a>
+      {#if $authorized}
+        <span>Authorized</span>
+      {:else}
+        <a href="/#" on:click="{authorize}">Authorize</a>
+      {/if}
       <a href="/#" on:click="{logout}">Log out</a>
     {:else}
       <a href="/#" on:click="{login}">Log in</a>
@@ -83,8 +103,8 @@
         <Task task="{item}" />
       {/each}
       </ul>
-      <input bind:value="{newTask}" placeholder="Enter New Task"/>
-      <button on:click="{addItem}">Add Task</button>
+      <input bind:value="{newTaskDescription}" placeholder="Enter New Task"/>
+      <button on:click="{addTask}">Add Task</button>
     {/if}
   </div>
   <p>

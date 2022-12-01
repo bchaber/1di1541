@@ -1,6 +1,7 @@
-import { createAuth0Client } from "@auth0/auth0-spa-js";
-import { user, authenticated, popup, token } from "./store";
-import config from "../auth_config";
+import { get } from 'svelte/store';
+import { createAuth0Client } from '@auth0/auth0-spa-js';
+import { user, authenticated, authorized, popup, token } from './store';
+import config from '../auth_config';
 
 async function createClient() {
   let client = await createAuth0Client({
@@ -17,6 +18,9 @@ async function loginWithPopup(client) {
 
     user.set(await client.getUser());
     authenticated.set(true);
+
+    console.info("Logged in as: ");
+    console.info(get(user));
   } catch (e) {
     console.error(e);
   } finally {
@@ -33,6 +37,10 @@ async function authorizeWithPopup(client) {
         scope: 'read:tasks write:tasks'
       }
     }));
+    authorized.set(true);
+
+    console.info("Access token for API: ");
+    console.info(get(token));
   } catch (e) {
     console.error(e);
   } finally {

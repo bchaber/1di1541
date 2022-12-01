@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const { expressjwt } = require('express-jwt');
 
@@ -16,6 +17,7 @@ const jwt = expressjwt({
 
 app.use(jwt);
 app.use(json);
+app.use(cors({ origin: "http://localhost:3000" }))
 
 app.get('/tasks', function (req, res) {
   let user = req.auth.sub
@@ -30,6 +32,9 @@ app.post('/tasks', function (req, res) {
   return res.status(200).send(tasks[user])
 });
 
-app.listen(port);
+process.on('SIGINT', function() {
+    process.exit();
+});
 
+app.listen(port);
 console.log('Running on port ', port);
