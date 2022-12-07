@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  pwa:
+    build: mypwa
+    ports:
+      - "3000:3000"
+  api:
+    build: myapi
+    ports:
+      - "3001:8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
