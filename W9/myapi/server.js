@@ -33,6 +33,12 @@ app.post('/tasks', function (req, res) {
 });
 
 process.on('SIGINT', function() {
+    console.info("interrupting...")
+    process.exit();
+});
+
+process.on('SIGTERM', function() {
+    console.info("terminating...")
     process.exit();
 });
 
