@@ -1,15 +1,13 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
   import Counter from './lib/Counter.svelte'
-  import Task from './lib/Task.svelte'
+  import Tasks from './lib/Tasks.svelte'
 
   import { onMount } from 'svelte';
-  import { authenticated, authorized, user, token } from './store';
-  import { tasks, user_tasks } from './store';
+  import { user, token } from './store';
+  import { authenticated, authorized } from './store';
   import auth from './auth_service';
 
   let client;
-  let newTaskDescription;
 
   onMount(async () => {
     client = await auth.createClient();
@@ -27,48 +25,9 @@
   function authorize() { auth.authorizeWithPopup(client) }
   function login() { auth.loginWithPopup(client) }
   function logout() { auth.logout(client); }
-
-  function addTask() {
-    let newTask = {
-      id: randomString(),
-      description: newTaskDescription,
-      completed: false,
-      user: $user.email
-    }
-
-    let updatedTasks = [...$tasks, newTask]
-
-    fetch("http://localhost:3001/tasks", {
-      method: "POST",
-      headers: {
-        'Authorization': 'Bearer ' + $token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newTask)
-    })
-    tasks.set(updatedTasks);
-    newTaskDescription = "";
-  }
-
-  function randomString(length = 7) {
-    var chars =
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    var result = "";
-    for (var i = length; i > 0; --i)
-      result += chars[Math.round(Math.random() * (chars.length - 1))];
-    return result;
-  }
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank" rel="noreferrer"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
   <h1>Vite &lt;3 Svelte</h1>
 
   <div class="card">
@@ -76,8 +35,6 @@
   </div>
 
   <div class="user">
-    <button>Toggle</button>
-
     {#if $authenticated}
       <span>&nbsp;&nbsp;{$user.name} ({$user.email})</span>
     {:else}
@@ -88,7 +45,7 @@
       {#if $authorized}
         <span>Authorized</span>
       {:else}
-        <a href="/#" on:click="{authorize}">Authorize</a>
+        <a href="/#" on:click="{authorize}">Authorize access to API</a>
       {/if}
       <a href="/#" on:click="{logout}">Log out</a>
     {:else}
@@ -98,15 +55,10 @@
 
   <div class="tasks">
     {#if $authenticated}
-      <ul>
-      {#each $user_tasks as item (item.id)}
-        <Task task="{item}" />
-      {/each}
-      </ul>
-      <input bind:value="{newTaskDescription}" placeholder="Enter New Task"/>
-      <button on:click="{addTask}">Add Task</button>
+      <Tasks/>
     {/if}
   </div>
+
   <p>
     Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
   </p>
@@ -117,17 +69,6 @@
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
   .read-the-docs {
     color: #888;
   }
