@@ -8,6 +8,7 @@ const to_cache = shell.concat(files);
 const staticAssets = new Set(to_cache);
 
 self.addEventListener('install', event => {
+	console.log('[ServiceWorker] Install');
 	event.waitUntil(
 		caches
 			.open(ASSETS)
@@ -19,6 +20,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+	console.log('[ServiceWorker] Activate');
 	event.waitUntil(
 		caches.keys().then(async keys => {
 			// delete old caches
@@ -52,6 +54,8 @@ async function fetchAndCache(request) {
 }
 
 self.addEventListener('fetch', event => {
+	console.log('[ServiceWorker] Fetch', event.request.url);
+	
 	if (event.request.method !== 'GET' || event.request.headers.has('range')) return;
 
 	const url = new URL(event.request.url);
