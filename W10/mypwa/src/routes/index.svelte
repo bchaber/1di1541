@@ -1,5 +1,6 @@
 <script>
 	import Counter from '../components/Counter.svelte'
+	import Offline from '../components/Offline.svelte'
 	import Tasks from '../components/Tasks.svelte'
   
 	import { onMount } from 'svelte';
@@ -58,6 +59,7 @@
 </div>
 
 <div class="user">
+  <Offline />
   {#if $authenticated}
 	<span>&nbsp;&nbsp;{$user.name} ({$user.email})</span>
   {:else}
