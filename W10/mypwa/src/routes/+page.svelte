@@ -18,7 +18,7 @@
 		  audience: 'http://localhost:3001',
 		  scope: 'read:tasks write:tasks'
 		}
-	  }));
+	  }).catch(error => console.log(error)));
 	  authorized.set($token !== undefined);
 	  user.set(await client.getUser());
 	});
