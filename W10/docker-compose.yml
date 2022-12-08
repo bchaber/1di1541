@@ -3,7 +3,7 @@ services:
   pwa:
     build: mypwa
     ports:
-      - "3000:3000"
+      - "3000:4173"
   api:
     build: myapi
     ports:

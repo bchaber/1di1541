@@ -1,12 +1,12 @@
 FROM node
-USER root
-WORKDIR /app
+USER node
+WORKDIR /home/node
 COPY package.json .
 RUN npm install
 COPY src ./src
 COPY static ./static
-COPY scripts ./scripts
 COPY auth_config.js .
-COPY rollup.config.js .
+COPY vite.config.js .
+COPY svelte.config.js .
 RUN npm run build
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "preview" ]

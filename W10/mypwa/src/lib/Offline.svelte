@@ -1,4 +1,4 @@
-<script lang="ts"> // based on https://github.com/vinayakkulkarni/s-offline
+<script> // based on https://github.com/vinayakkulkarni/s-offline
   import { offline } from '../store';
   function updateOnlineStatus() {
       offline.set(!navigator.onLine)

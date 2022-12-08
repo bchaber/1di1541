@@ -1,6 +1,4 @@
 <script>
-	import { stores } from '@sapper/app';
-	const { preloading, page, session } = stores();
   import { tasks } from '../store';
   import { token } from '../store';
   import { user }  from '../store';

@@ -1,7 +1,7 @@
 <script>
-	import Counter from '../components/Counter.svelte'
-	import Offline from '../components/Offline.svelte'
-	import Tasks from '../components/Tasks.svelte'
+	import Counter from '../lib/Counter.svelte'
+	import Offline from '../lib/Offline.svelte'
+	import Tasks from '../lib/Tasks.svelte'
   
 	import { onMount } from 'svelte';
 	import { user, token } from '../store';
@@ -27,32 +27,8 @@
 	function login() { auth.loginWithPopup(client) }
 	function logout() { auth.logout(client); }
 </script>
-
-<style>
-	h1 {
-		text-align: center;
-		margin: 0 auto;
-	}
-
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
-</style>
-
-<svelte:head>
-	<title>Sapper project template</title>
-</svelte:head>
-
-<h1>Svelte + Sapper</h1>
+<h1>Welcome to SvelteKit</h1>
+<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 
 <div class="card">
   <Counter />
